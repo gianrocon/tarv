@@ -77,6 +77,19 @@ def analisar_gaps(registros):
         data_anterior = data_atual.strftime("%d/%m/%Y")
         data_fim_estoque = data_atual + timedelta(days=estoque_atual)
 
+    hoje = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
+    if data_fim_estoque and data_fim_estoque < hoje:
+        dias_sem = (hoje - data_fim_estoque).days
+        if dias_sem > 10:
+            analise.append({
+                "Inicio":   data_fim_estoque.strftime("%d/%m/%Y"),
+                "Fim":      hoje.strftime("%d/%m/%Y"),
+                "Dias":     dias_sem,
+                "Retirada": data_anterior,
+                "Qtd":      dias_recebidos_anterior,
+                "Reserva":  sobra_na_retirada_anterior,
+            })
+
     return pd.DataFrame(analise)
 
 # --- Streamlit UI ---
